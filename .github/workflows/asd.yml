@@ -8,8 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     name: ASD documents
     steps:
-      # このリポジトリのプライベートアクションを使用するには
-      # リポジトリをチェックアウトする
+
       - name: Checkout
         uses: actions/checkout@v2
 
