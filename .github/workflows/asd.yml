@@ -1,0 +1,26 @@
+name: "ASD documents"
+
+on:
+  ["push", "workflow_dispatch"]
+
+jobs:
+  asd:
+    runs-on: ubuntu-latest
+    name: ASD documents
+    steps:
+      # このリポジトリのプライベートアクションを使用するには
+      # リポジトリをチェックアウトする
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generates ASD documents
+        uses: ./ # Uses an action in the root directory
+        id: asd
+        with:
+          config: profile.xml
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./asd-public
