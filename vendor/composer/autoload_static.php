@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit15ac3e4b4feb3db241cc9ce2a39187cc
+class ComposerStaticInitc818ec72c5f33f60dc0d2a4451d46b05
 {
     public static $files = array (
         'f94e61bace66fd80544d5a94b3c03e76' => __DIR__ . '/..' . '/koriym/app-state-diagram/vendor-xml2json/xml2json.php',
@@ -57,9 +57,9 @@ class ComposerStaticInit15ac3e4b4feb3db241cc9ce2a39187cc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit15ac3e4b4feb3db241cc9ce2a39187cc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit15ac3e4b4feb3db241cc9ce2a39187cc::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit15ac3e4b4feb3db241cc9ce2a39187cc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitc818ec72c5f33f60dc0d2a4451d46b05::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitc818ec72c5f33f60dc0d2a4451d46b05::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInitc818ec72c5f33f60dc0d2a4451d46b05::$classMap;
 
         }, null, ClassLoader::class);
     }
