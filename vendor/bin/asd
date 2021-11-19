@@ -1,0 +1,90 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Koriym\AppStateDiagram\ConfigFactory;
+use Koriym\AppStateDiagram\DrawDiagram;
+use Koriym\AppStateDiagram\DumpDocs;
+use Koriym\AppStateDiagram\Exception\AlpsFileNotReadableException;
+use Koriym\AppStateDiagram\IndexPage;
+use Koriym\AppStateDiagram\LabelNameFactory;
+use Koriym\AppStateDiagram\Profile;
+use Koriym\AppStateDiagram\TaggedProfile;
+use Koriym\DataFile\Exception\DataFileNotFoundException;
+
+foreach ([__DIR__ . '/../../../autoload.php', __DIR__ . '/../vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+
+        break;
+    }
+}
+
+$options = getopt('c:w::l::', ['config:', 'watch::', 'color::', 'and-tag::', 'or-tag::', 'label::']);
+if ($argc === 1) {
+    $options['c'] = getcwd();
+}
+try {
+    $config = isset($options['c']) ? ConfigFactory::fromFile($options['c'], $argc, $argv, $options) : ConfigFactory::fromCommandLine($argc, $argv, $options);
+} catch (DataFileNotFoundException $e) {
+    printf('Config file not found: %s', $e->getMessage());
+    exit(1);
+} catch (AlpsFileNotReadableException $e) {
+    printf('Profile file not found: %s', $e->getMessage());
+    exit(1);
+}
+if ($config->watch) {
+    chdir(dirname(__DIR__) . '/asd-sync');
+    $isFirstRun = ! is_dir(dirname(__DIR__) . '/asd-sync/node_modules');
+    if ($isFirstRun) {
+        passthru('npm install');
+    }
+    passthru('npm start -- --profile ' . $config->profile);
+    exit(0);
+}
+try {
+    $labelName = LabelNameFactory::getInstance($config->label);
+    $profile = new Profile($config->profile, $labelName);
+    $dot = (new DrawDiagram($labelName))($profile);
+    // dump docs/
+    (new DumpDocs())($profile, $config->profile);
+
+    if ($config->hasTag) {
+        $filteredProfile = new TaggedProfile($profile, $config->filter->or, $config->filter->and);
+        $tagDot = $config->filter->color ? (new DrawDiagram($labelName))($profile, $filteredProfile, $config->filter->color) : (new DrawDiagram($labelName))($filteredProfile);
+    }
+} catch (Exception $e) {
+    $path = explode('\\', get_class($e));
+    $msg = sprintf("%s: %s \n in %s:%s\n", end($path), $e->getMessage(), $e->getFile(), $e->getLine());
+    file_put_contents('php://stderr', $msg);
+    exit(1);
+}
+$file = str_replace(['.xml','.json'], '.dot', $config->profile);
+file_put_contents($file, $dot);
+
+$svgFile = str_replace(['.xml', '.json'], '.svg', $config->profile);
+$cmd = "dot -Tsvg {$file} -o {$svgFile}";
+passthru($cmd, $status);
+if ($status !== 0) {
+    echo 'Warning: Graphviz error. https://graphviz.org/download/' . PHP_EOL;
+}
+
+$indexHtml = dirname($config->profile) . '/index.html';
+file_put_contents($indexHtml, (new IndexPage($profile))->index);
+echo "ASD generated. {$indexHtml}" . PHP_EOL;
+echo sprintf('Descriptors(%s), Links(%s)', count($profile->descriptors), count($profile->links)) . PHP_EOL;
+
+if (!isset($tagDot)) {
+  exit(0);
+}
+
+$tagFile = dirname($file) . '/tag_' . basename($file);
+file_put_contents($tagFile, $tagDot);
+$filteredSvg = dirname($svgFile) . '/tag_' . basename($svgFile);
+$cmd = "dot -Tsvg {$tagFile} -o {$filteredSvg}";
+passthru($cmd, $status);
+if ($status !== 0) {
+    echo 'Warning: Graphviz error. https://graphviz.org/download/' . PHP_EOL;
+}
+echo sprintf('Tagged ASD generated. %s', $filteredSvg) . PHP_EOL;

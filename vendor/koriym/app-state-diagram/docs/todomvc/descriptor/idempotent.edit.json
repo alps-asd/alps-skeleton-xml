@@ -1,0 +1,5 @@
+{
+  "id": "edit",
+  "type": "idempotent",
+  "schema": "https://alps-io.github.io/schemas/alps.json"
+}

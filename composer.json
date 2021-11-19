@@ -1,0 +1,5 @@
+{
+    "require": {
+        "koriym/app-state-diagram": "^0.8.0"
+    }
+}

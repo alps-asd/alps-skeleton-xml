@@ -1,0 +1,14 @@
+{
+  "$schema": "https://raw.githubusercontent.com/koriym/spec/master/schemas/alps.json",
+  "alps": {
+    "descriptor": [
+      {"id": "Foo", "descriptor": [
+          {"id": "bar"},
+          {"id": "baz"},
+          {"id": "goBar", "type": "safe", "rt": "#Bar"}
+      ]
+      },
+      {"id": "Bar"}
+    ]
+  }
+}

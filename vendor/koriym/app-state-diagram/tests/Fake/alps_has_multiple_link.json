@@ -1,0 +1,38 @@
+{
+  "$schema": "https://alps-io.github.io/schemas/alps.json",
+  "alps": {
+    "link": [
+      {
+        "href": "https://github.com/koriym/app-state-diagram/",
+        "rel": "about"
+      },
+      {
+        "href": "https://github.com/koriym/app-state-diagram/",
+        "rel": "repository"
+      }
+    ],
+    "descriptor": [
+      {"id": "id"},
+      {
+        "id": "Item",
+        "tag": "tag1",
+        "link": [
+          {
+            "rel": "help",
+            "href": "https://github.com/koriym/app-state-diagram/",
+            "title": "API Help File"
+          },
+          {
+            "rel": "about",
+            "href": "https://github.com/koriym/app-state-diagram/"
+          }
+        ],
+        "descriptor": [
+          {
+            "href": "#id"
+          }
+        ]
+      }
+    ]
+  }
+}
