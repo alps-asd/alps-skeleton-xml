@@ -1,8 +1,0 @@
-{
-  "$schema": "https://raw.githubusercontent.com/koriym/spec/master/schemas/alps.json",
-  "alps": {
-    "descriptor": [
-      {"href": "Foo.json#__INVALID__"}
-    ]
-  }
-}
